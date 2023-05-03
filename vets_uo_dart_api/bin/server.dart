@@ -5,7 +5,6 @@ import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:vets_uo_dart_api/db_manager.dart';
 
-
 import 'dart:convert';
 
 // Configure routes.
@@ -28,8 +27,6 @@ Future<Response> _usersHandler(Request request) async {
  final users = await dbManager.findAll();
  return Response.ok(json.encode(users));
 }
-
-
 
 void main(List<String> args) async {
   // Use any available host or container IP (usually `0.0.0.0`).
