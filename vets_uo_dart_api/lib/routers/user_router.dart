@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:vets_uo_dart_api/models/user.dart';
@@ -11,12 +12,16 @@ final userRouter = Router()
   ..get('/users', _usersHandler)
   ..post('/users/signUp', _signUpHanler)
   ..post('/users/login', _loginHanler)
-  ..get('/users/<id>', _getUserHanler);
+  ..get('/users/<id>', _getUserHanler)
+  ..delete('/users/<id>', _getUserDeletionHandler);
 
 Future<Response> _usersHandler(Request request) async {
   final users = await UsersRepository.findAll();
   return Response.ok(json.encode(users));
 }
+
+
+
 Future<Response> _signUpHanler(Request request) async {
   final userRequestBody = await request.readAsString();
   final user = User.fromJson(json.decode(userRequestBody));
@@ -75,6 +80,12 @@ Future<Response> _getUserHanler(Request request) async {
   }
 }
 
+Future<Response> _getUserDeletionHandler(Request request) async {
+    dynamic userId = ObjectId.fromHexString(request.params['id'].toString());
+    final users = await UsersRepository.delete({"_id":userId});
+    return Response.ok(json.encode(users));
+}
+
 
 Future<bool> areCredencialValid(Map<String, dynamic> credentials) async {
   final user = await UsersRepository.findOne({"email": credentials["email"]});
@@ -88,7 +99,6 @@ Future<bool> areCredencialValid(Map<String, dynamic> credentials) async {
 }
 
 
-/** Funcion manejadora del login*/
 Future<Response> _loginHanler(Request request) async {
   final credentialRequestBody = await request.readAsString();
   final Map<String, dynamic> bodyParams = json.decode(credentialRequestBody);

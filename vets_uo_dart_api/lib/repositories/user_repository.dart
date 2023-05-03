@@ -21,5 +21,9 @@ static Future<dynamic> findOne(Map<String, dynamic> filter) async {
     return result;
 }
 
+static Future<dynamic> delete(Map<String, dynamic> filter) async {
+    final result = await dbManager.deleteUser(filter);
+    return result;
+}
 
 }

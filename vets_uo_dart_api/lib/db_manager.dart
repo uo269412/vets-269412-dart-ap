@@ -46,12 +46,26 @@ class DbManager {
     }
   }
 
-    // Method findOne take the same parameter and returns Future of just one map (mongo document) or null if not found
   Future<dynamic> findOne(filter) async {
     await connect();
     final result = await _collection.findOne(filter);
     return result;
   }
+
+
+  Future<dynamic> deleteUser(filter) async {
+    try {
+    await connect();
+    final result = await _collection.findOne(filter);
+    await _collection.remove(filter);
+    return {"deletedUserId": result.id};
+    } catch (error) {
+      return {"error": "El usuario no se ha podido borrar"};
+    } finally {
+      await close();
+    }
+
+}
 
 Future<dynamic> insertOne(Map<String, dynamic> data) async {
     try {
