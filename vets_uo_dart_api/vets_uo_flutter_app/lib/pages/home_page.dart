@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vets_uo_flutter_app/src/user.dart';
+import 'package:vets_uo_flutter_app/pages/user_signup_format.dart';
 
 class HomePage extends StatefulWidget {
   //final String _title;
@@ -39,7 +40,16 @@ class StateHomePage extends State<HomePage> {
             ),
           );
         },
+     ),// ListView builder
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const UserSignUpForm())),
+        },
+        tooltip: "Registrar usuario",
+        child: const Icon(Icons.add),
       ),
-    );
+    ); // Scaffor
   }
 }
+
