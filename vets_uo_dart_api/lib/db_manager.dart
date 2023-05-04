@@ -52,18 +52,40 @@ class DbManager {
     return result;
   }
 
+  Future<dynamic> edit(filter, Map<String, dynamic> data) async {
+      await connect();
+       var update = {};
+
+        if (data.containsKey('name')) {
+          update['name'] = data['name'];
+        }
+
+        if (data.containsKey('surname')) {
+          update['surname'] = data['surname'];
+        }
+
+        if (data.containsKey('email')) {
+          update['email'] = data['email'];
+        }
+
+        if (data.containsKey('birthDate')) {
+          update['birthDate'] = data['birthDate'];
+        }
+
+        if (data.containsKey('password')) {
+          update['password'] = data['password'];
+        }
+      final result = await _collection.update(filter,{'\$set': update});
+      return result;
+  }
+
 
   Future<dynamic> deleteUser(filter) async {
-    try {
     await connect();
     final result = await _collection.findOne(filter);
     await _collection.remove(filter);
-    return {"deletedUserId": result.id};
-    } catch (error) {
-      return {"error": "El usuario no se ha podido borrar"};
-    } finally {
-      await close();
-    }
+    return result;
+
 
 }
 

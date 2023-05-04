@@ -13,13 +13,13 @@ final userRouter = Router()
   ..post('/users/signUp', _signUpHanler)
   ..post('/users/login', _loginHanler)
   ..get('/users/<id>', _getUserHanler)
-  ..delete('/users/<id>', _getUserDeletionHandler);
+  ..delete('/users/<id>', _getUserDeletionHandler)
+  ..put('/users/<id>', _editUserHandler);
 
 Future<Response> _usersHandler(Request request) async {
   final users = await UsersRepository.findAll();
   return Response.ok(json.encode(users));
 }
-
 
 
 Future<Response> _signUpHanler(Request request) async {
@@ -66,6 +66,7 @@ validateUser(User user) async {
   return errors;
 }
 
+
 Future<Response> _getUserHanler(Request request) async {
   final dynamic token =
       request.headers.containsKey("token") ? request.headers["token"] : "";
@@ -80,10 +81,74 @@ Future<Response> _getUserHanler(Request request) async {
   }
 }
 
+/*
+Ponemos como parámetro del request el id, y de cuerpo los atributos que queramos cambiar. Se cambiarán solo los que se pongan, y si se quiere cambiar
+el usuario, no se puede poner el mismo que ya había previamente
+*/
+Future<Response> _editUserHandler(Request request) async {
+    final dynamic tokenValidation = validateToken(request);
+    if (tokenValidation['authorized'] == false) {
+      return Response.unauthorized(json.encode(tokenValidation));
+    }
+
+  dynamic userId = ObjectId.fromHexString(request.params['id'].toString());
+  final users = await UsersRepository.findOne({"_id":userId});
+     if (users == null) {
+              return Response.ok('No existe un usuario con ese id');
+     }
+     else {
+    final userRequestBody = await request.readAsString();
+    final user = User.fromJson(json.decode(userRequestBody));
+    final List<Map<String, String>> userValidateErrors = await validateUser(user);
+    dynamic userCreated;
+    if (userValidateErrors.isEmpty) {
+          userCreated = await UsersRepository.update({"_id":userId}, user);
+      if (userCreated.containsKey("error")) userValidateErrors.add(userCreated);
+    }
+    if (userValidateErrors.isNotEmpty) {
+      final encodedError = jsonEncode(userValidateErrors);
+      return Response.badRequest(
+          body: encodedError, headers: {'content-type': 'application/json'});
+    } else {
+      return Response.ok('Usuario actualizado correctamente');
+    }
+  }
+}
+
+/*
+Ponemos como parámetro del request el id del usuario que queramos borrar
+*/
 Future<Response> _getUserDeletionHandler(Request request) async {
+  
+    final dynamic tokenValidation = validateToken(request);
+    if (tokenValidation['authorized'] == false) {
+      return Response.unauthorized(json.encode(tokenValidation));
+    }
+    
     dynamic userId = ObjectId.fromHexString(request.params['id'].toString());
-    final users = await UsersRepository.delete({"_id":userId});
-    return Response.ok(json.encode(users));
+    final usersDelete = await UsersRepository.delete({"_id":userId});
+    if (usersDelete == null) {
+      return Response.ok('No se ha encontrado ningún usuario con ese id');
+    } else {
+        final usersGet = await UsersRepository.findOne({"_id":userId});
+            if (usersGet == null) {
+              return Response.ok('Se ha borrado el usuario correctamente');
+            } else {
+        return Response.ok('No se ha podido borrar el usuario');
+        }
+    }
+
+  
+
+
+}
+
+Map<String, dynamic> validateToken(Request request) {
+    final dynamic token =
+      request.headers.containsKey("token") ? request.headers["token"] : "";
+  final Map<String, dynamic> verifiedToken =
+      jwt_service.UserTokenService.verifyJwt(token);
+  return verifiedToken;
 }
 
 
