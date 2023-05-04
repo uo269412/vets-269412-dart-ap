@@ -53,7 +53,9 @@ class StateHomePage extends State<HomePage> {
                 });
             },
 
-            onLongPress: () {},
+            onLongPress: () {
+              deleteUser(context, users[index]);
+            },
             title: Text("${users[index].name} ${users[index].surname}"),
             subtitle: Text("${'Teléfono:'}${users[index].phone}"),
             leading: CircleAvatar(
@@ -93,5 +95,36 @@ floatingActionButton: FloatingActionButton(
       ),
     ); // Scaffor
   }
+
+deleteUser(BuildContext context, User user) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text("Borrar usuario"),
+              content: Text("Está seguro de borrar el usuario: ${user.name}."),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      users.remove(user);
+                      Navigator.pop(context);
+                    });
+                  },
+                  child: const Text(
+                    "Borrar",
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("cancelar",
+                        style: TextStyle(color: Colors.green))),
+              ],
+            ));
+  }
+
+
 }
 
