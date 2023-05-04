@@ -3,6 +3,7 @@ import 'package:vets_uo_flutter_app/src/user.dart';
 import 'package:vets_uo_flutter_app/pages/user_signup_format.dart';
 import 'package:vets_uo_flutter_app/pages/custom_alert_dialog.dart';
 import 'package:vets_uo_flutter_app/pages/user_edit.dart';
+import 'package:vets_uo_flutter_app/pages/user_view.dart';
 
 class HomePage extends StatefulWidget {
   //final String _title;
@@ -14,10 +15,10 @@ class HomePage extends StatefulWidget {
 
 class StateHomePage extends State<HomePage> {
   List<User> users = [
-    User("Pedro", "Alvarez", "pedro.alvarez.com", "034-999-999-977"),
-    User("María", "Alvarez", "pedro.alvarez.com", "034-999-999-978"),
-    User("Teresa", "Almonte", "teresa.almonte.com", "034-999-999-979"),
-    User("Juan", "Almonte", "juan.almonte.com", "034-999-999-988")
+    User("Pedro", "Alvarez Sanchez", "pedro@alvarez.com", "034-999-999-977"),
+    User("María", "Alvarez Rodriguez", "maria@alvarez.com", "034-999-999-978"),
+    User("Teresa", "Almonte Campo", "teresa@almonte.com", "034-999-999-979"),
+    User("Juan", "Almonte Campo", "juan@almonte.com", "034-999-999-988")
   ];
   @override
   Widget build(BuildContext context) {
@@ -29,6 +30,7 @@ class StateHomePage extends State<HomePage> {
         itemCount: users.length,
         itemBuilder: (context, index) {
           return ListTile(
+            
             onTap: () {
               User currentUser = users[index];
               Navigator.push(
@@ -52,7 +54,16 @@ class StateHomePage extends State<HomePage> {
                           }
                 });
             },
-
+            
+/*
+              onTap: () {
+              User currentUser = users[index];
+              Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserView(user: currentUser)));
+            },
+*/
             onLongPress: () {
               deleteUser(context, users[index]);
             },
@@ -100,8 +111,8 @@ deleteUser(BuildContext context, User user) {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: const Text("Borrar usuario"),
-              content: Text("Está seguro de borrar el usuario: ${user.name}."),
+              title: const Text("Operaciones de usuario"),
+              content: Text("Elija una operación que realizar con el siguiente usuario: ${user.name}."),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -115,12 +126,26 @@ deleteUser(BuildContext context, User user) {
                     style: TextStyle(color: Colors.red),
                   ),
                 ),
+                                TextButton(
+                  onPressed: () {
+                    setState(() {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserView(user: user)));
+                    });
+                  },
+                  child: const Text(
+                    "Ver información",
+                    style: TextStyle(color: Color.fromARGB(255, 0, 24, 238)),
+                  ),
+                ),
                 TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: const Text("cancelar",
-                        style: TextStyle(color: Colors.green))),
+                    child: const Text("Cancelar",
+                        style: TextStyle(color: Color.fromARGB(255, 175, 175, 175)))),
               ],
             ));
   }
