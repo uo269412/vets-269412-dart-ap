@@ -46,12 +46,48 @@ class DbManager {
     }
   }
 
-    // Method findOne take the same parameter and returns Future of just one map (mongo document) or null if not found
   Future<dynamic> findOne(filter) async {
     await connect();
     final result = await _collection.findOne(filter);
     return result;
   }
+
+  Future<dynamic> edit(filter, Map<String, dynamic> data) async {
+      await connect();
+       var update = {};
+
+        if (data.containsKey('name')) {
+          update['name'] = data['name'];
+        }
+
+        if (data.containsKey('surname')) {
+          update['surname'] = data['surname'];
+        }
+
+        if (data.containsKey('email')) {
+          update['email'] = data['email'];
+        }
+
+        if (data.containsKey('birthDate')) {
+          update['birthDate'] = data['birthDate'];
+        }
+
+        if (data.containsKey('password')) {
+          update['password'] = data['password'];
+        }
+      final result = await _collection.update(filter,{'\$set': update});
+      return result;
+  }
+
+
+  Future<dynamic> deleteUser(filter) async {
+    await connect();
+    final result = await _collection.findOne(filter);
+    await _collection.remove(filter);
+    return result;
+
+
+}
 
 Future<dynamic> insertOne(Map<String, dynamic> data) async {
     try {
