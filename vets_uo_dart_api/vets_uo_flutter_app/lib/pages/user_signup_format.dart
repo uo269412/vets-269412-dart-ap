@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vets_uo_flutter_app/src/user.dart';
+import 'package:vets_uo_flutter_app/src/validations.dart';
 
 // Create a Form widget.
 class UserSignUpForm extends StatefulWidget {
@@ -37,10 +38,7 @@ class UserSignUpFormState extends State<UserSignUpForm> {
                 ),
                 // The validator receives the text that the user has entered.
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'por Favor digite el nombre';
-                  }
-                  return null;
+                  return Validations.validateName(value);
                 },
                 onSaved: (value) => _name = value ?? '',
               ),
@@ -51,10 +49,7 @@ class UserSignUpFormState extends State<UserSignUpForm> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'por favor digite los apellidos';
-                  }
-                  return null;
+                  return Validations.validateSurname(value);
                 },
                 onSaved: (value) {
                   _surname = value ?? '';
@@ -67,10 +62,7 @@ class UserSignUpFormState extends State<UserSignUpForm> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'por favor digite el  email';
-                  }
-                  return null;
+                  return Validations.validateEmail(value);
                 },
                 onSaved: (value) {
                   _email = value ?? '';
@@ -83,10 +75,7 @@ class UserSignUpFormState extends State<UserSignUpForm> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'por favor digite el telefono ';
-                  }
-                  return null;
+                  return Validations.validatePhone(value);
                 },
                 onSaved: (value) {
                   _phone = value ?? '';

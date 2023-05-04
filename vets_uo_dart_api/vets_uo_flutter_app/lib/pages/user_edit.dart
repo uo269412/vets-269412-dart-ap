@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vets_uo_flutter_app/src/user.dart';
+import 'package:vets_uo_flutter_app/src/validations.dart';
 
 class UserEdit extends StatefulWidget {
   final User user;
@@ -45,10 +46,7 @@ class StateUserEdit extends State<UserEdit> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'por Favor digite el nombre';
-                  }
-                  return null;
+                  return Validations.validateName(value);
                 },
                  onSaved: (value) => nameController.text = value ?? '',
               ),
@@ -60,10 +58,7 @@ class StateUserEdit extends State<UserEdit> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'por favor digite los apellidos';
-                  }
-                  return null;
+                  return Validations.validateSurname(value);
                 },
                 onSaved: (value) {
                   surnameController.text = value ?? '';
@@ -77,10 +72,7 @@ class StateUserEdit extends State<UserEdit> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'por favor digite el  email';
-                  }
-                  return null;
+                 return Validations.validateEmail(value);
                 },
                 onSaved: (value) {
                   emailController.text = value ?? '';
@@ -94,10 +86,7 @@ class StateUserEdit extends State<UserEdit> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'por favor digite el telefono ';
-                  }
-                  return null;
+                  return Validations.validatePhone(value);
                 },
                 onSaved: (value) {
                   phoneController.text = value ?? '';
